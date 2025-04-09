@@ -150,28 +150,27 @@ class AIDGHomePageViewModel: ObservableObject {
 
         if isActive, let _ = UserDefaults.standard.object(forKey: sessionStartKey) as? Date {
         //
+            isSessionActive = true
         }
     }
+//    func checkExistingSession() {
+//            if let savedEmployeeName = UserDefaults.standard.string(forKey: employeeKey),
+//               let savedDeviceName = UserDefaults.standard.string(forKey: deviceKey),
+//               let savedDeviceId = UserDefaults.standard.string(forKey: deviceIdKey),
+//               UserDefaults.standard.bool(forKey: isSessionActiveKey) {
+//                
+//                employeeName = savedEmployeeName
+//                deviceName = savedDeviceName
+//                deviceId = savedDeviceId
+//                isSessionActive = true
+//                sessionStartTime = UserDefaults.standard.object(forKey: sessionStartKey) as? Date
+//            }
+//        }
 
     func selectFullScreenView(_ screen: AIDGselectFullScreen? = nil) {
         self.presentedView = screen
     }
 
-    func formatTime(_ time: TimeInterval) -> String {
-        let totalSeconds = Int(time)
-        let days = totalSeconds / (24 * 3600)
-        let hours = (totalSeconds % (24 * 3600)) / 3600
-        let minutes = (totalSeconds % 3600) / 60
-        let seconds = totalSeconds % 60
-
-        if days > 0 {
-            return String(format: "%02dd %02dh %02dm %02ds", days, hours, minutes, seconds)
-        } else if hours > 0 {
-            return String(format: "%02dh %02dm %02ds", hours, minutes, seconds)
-        } else {
-            return String(format: "%02dm %02ds", minutes, seconds)
-        }
-    }
     func getTabs() -> [AIDGHomepageSections] {
         return [AIDGHomepageSections.enroll, AIDGHomepageSections.listDevices]
         }

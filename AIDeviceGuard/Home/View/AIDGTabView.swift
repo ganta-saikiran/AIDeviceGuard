@@ -15,6 +15,7 @@ enum AIDGTab {
 
 struct AIDGHomepageTabView: View {
     @ObservedObject var viewModel: AIDGHomePageViewModel = AIDGHomePageViewModel()
+    @ObservedObject private var manager = FirebaseManager()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -51,8 +52,35 @@ extension AIDGHomepageTabView{
             TabView(
                 selection: $viewModel.tabselected,
                 content: {
-                    AIDGHomepageView()
-                        .tag(AIDGHomepageSections.enroll)
+               if viewModel.isSessionActive {
+                   AIDGSuccessScreen(
+                       action: { action in
+                           switch action {
+                           case .openned:
+                               viewModel.endSession()
+                               if !viewModel.isSessionActive {
+                                   manager.assignDevice(
+                                       deviceId: viewModel.deviceId,
+                                       deviceName: viewModel.deviceName,
+                                       employeeName: "",
+                                       status: "AVAILABLE"
+                                   )
+                               }
+                               viewModel.showSuceesScreen = false
+                               viewModel.isSessionActive = false
+                           case .closedd:
+                               break
+                           }
+                       },
+                       deviceName: viewModel.deviceName,
+                       employeeName: viewModel.employeeName
+                   )
+                    } else {
+                        AIDGHomepageView()
+                            .tag(AIDGHomepageSections.enroll)
+                    }
+
+                    
                     ActiveDevicesListView()
                         .tag(AIDGHomepageSections.listDevices)
                 })

@@ -7,55 +7,59 @@
 import SwiftUI
 import AIComponents
 
+
 struct ActiveDevicesListView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var viewModel = ActiveDevicesListViewModel()
 
     var body: some View {
-        ZStack {
-            // 🔹 Background
-            Image("AIAppBackground")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack {
+                // 🔹 Background
+                Image("AIAppBackground")
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-        
-                // 🔹 Device List
-                if viewModel.devices.isEmpty {
-                    Spacer()
-                    Text("No Active Devices Found")
-                        .font(.headline)
-                        .padding()
-                    Spacer()
-                } else {
-                    List {
-                        ForEach(viewModel.devices) { device in
-                            HStack {
-                                Image(systemName: "iphone.gen2")
-                                    .foregroundColor(.blue)
+                VStack(spacing: 0) {
+                    // 🔹 Device List
+                    if viewModel.devices.isEmpty {
+                        Spacer()
+                        Text("No Active Devices Found")
+                            .font(.headline)
+                            .padding()
+                        Spacer()
+                    } else {
+                        List {
+                            ForEach(viewModel.devices) { device in
+                                HStack {
+                                    Image(systemName: "iphone.gen2")
+                                        .foregroundColor(.blue)
 
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(device.device_name)
-                                        .font(.headline)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(device.device_name)
+                                            .font(.headline)
 
-                                    Text("Employee: \(device.assignedTo.name.isEmpty ? "None" : device.assignedTo.name)")
-                                        .font(.subheadline)
+                                        Text("Employee: \(device.assignedTo.name.isEmpty ? "None" : device.assignedTo.name)")
+                                            .font(.subheadline)
 
-                                    Text("Status: \(device.status)")
-                                        .font(.subheadline)
-                                        .foregroundColor(device.status.lowercased() == "available" ? .green : .red)
+                                        Text("Status: \(device.status)")
+                                            .font(.subheadline)
+                                            .foregroundColor(device.status.lowercased() == "available" ? .green : .red)
+                                    }
                                 }
+                                .padding(.vertical, 5)
                             }
-                            .padding(.vertical, 5)
                         }
+                        .listStyle(PlainListStyle())
+                        .background(Color.clear)
+                        .scrollContentBackground(.hidden)
                     }
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
-                    .scrollContentBackground(.hidden)
                 }
+                .padding(.horizontal, 20)
+                .frame(width: geometry.size.width, height: geometry.size.height)
             }
-            .padding(.horizontal, 20)
+            .ignoresSafeArea(edges: .bottom) // Keeps top safe area but ignores bottom
         }
         .onAppear(){
             viewModel.fetchDevices()
